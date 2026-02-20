@@ -39,7 +39,7 @@
     <div id="startARDiv" class="ctaDiv">
         <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
         <p id="loadingText" style="text-align: center; width:60vw">Loading AR experience...</p>
-        <button id="startARButton" style="display:none" onclick="StartAR()">ALLOW ACCESS</button>
+        <button id="startARButton" style="display:none; padding:15px 40px; font-size:16px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:25px; cursor:pointer; box-shadow:0 4px 15px rgba(102, 126, 234, 0.4); font-weight:bold;" onclick="StartAR()">START AR</button>
     </div>
     <div id="screenshotDiv" style="display: none;" class="ctaDiv">
         <div style="position:relative; background-color:white; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25);">
@@ -80,6 +80,12 @@
     <script src="wtracker.js" type="text/javascript"></script>
     <script src="Build/MemoriesAR.loader.js"></script>
     <script>
+        // Detect iOS devices
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
         var initialize = async() =>{
             var unityCanvas = document.querySelector("#unity-canvas");
             var videoCanvas = document.querySelector("#video-canvas");
@@ -96,9 +102,17 @@
             }
 
             await LoadWebcams();
-            // Auto-start AR instead of showing button
-            console.log("Auto-starting AR experience...");
-            StartAR();
+            
+            // iOS requires user gesture for motion sensors
+            if (isIOS()) {
+                console.log("iOS detected - showing start button for user gesture");
+                document.getElementById("loadingText").textContent = "Tap below to start AR experience";
+                document.getElementById("startARButton").style.display = "block";
+            } else {
+                // Auto-start for Android and other devices
+                console.log("Auto-starting AR experience...");
+                StartAR();
+            }
         }
 
         initialize();
@@ -280,15 +294,34 @@
             await arCamera.startWebcam(video);
         }
 
-        function StartMotionSensors(){
+        async function StartMotionSensors(){
+            // iOS 13+ requires explicit permission for DeviceMotion/DeviceOrientation
+            if (typeof DeviceOrientationEvent !== 'undefined' && 
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    console.log("Requesting iOS motion sensor permission...");
+                    const permission = await DeviceOrientationEvent.requestPermission();
+                    if (permission !== 'granted') {
+                        console.error("Motion sensor permission denied");
+                        ShowError("Motion sensor access is required for AR. Please enable it in Settings.");
+                        return;
+                    }
+                    console.log("iOS motion sensor permission granted");
+                } catch (error) {
+                    console.error("Error requesting motion sensor permission: " + error);
+                    ShowError("Failed to request motion sensor permission. " + error);
+                    return;
+                }
+            }
+            
+            // Start the motion sensors
             window.wTracker.startAngles()
             .then(()=>{
-                console.log("Motion sensors started");
+                console.log("Motion sensors started successfully");
             })
             .catch(error=>{
                 console.error("Failed to start motion sensors - " + error);
                 ShowError("Failed to start the experience. " + error);
-
             });
         }
 
