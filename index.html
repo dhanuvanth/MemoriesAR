@@ -129,8 +129,6 @@
             canvas.style.width = window.innerWidth + "px";
             canvas.style.height = window.innerHeight + "px";
             
-            loadingBar.style.display = "block";
-            
             createUnityInstance(document.querySelector("#unity-canvas"), {
                     dataUrl: "Build/MemoriesAR.data",
                     frameworkUrl: "Build/MemoriesAR.framework.js",
@@ -146,24 +144,18 @@
                     (progress) => {
                         progressBarFull.style.width = 100 * progress + "%";
                     }
-                ).then(async (unityInstance) => {
-                console.log("Unity instance loaded successfully");
+                ).then((unityInstance) => {
                 window.unityInstance = unityInstance;
-                loadingBar.style.display = "none";
-                
-                // Start motion sensors and webcam initialization
-                // Motion sensors first (may show iOS permission dialog)
-                await StartMotionSensors();
-                
-                // Then request webcam (will show camera permission)
                 RequestWebcam();
-                
-            }).catch((error) => {
-                console.error("Failed to create Unity instance:", error);
-                ShowError("Failed to load the AR experience. Please refresh and try again.");
+                loadingBar.style.display = "none";
             });
+            StartMotionSensors();
             
             //Call Start GPS here --> StartGPS();
+
+            
+            
+            loadingBar.style.display = "block";
         }
 
         //Set Facing Mode here ('environment', 'user', '')
@@ -303,8 +295,6 @@
         }
 
         async function StartMotionSensors(){
-            console.log("StartMotionSensors called");
-            
             // iOS 13+ requires explicit permission for DeviceMotion/DeviceOrientation
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -313,28 +303,26 @@
                     const permission = await DeviceOrientationEvent.requestPermission();
                     if (permission !== 'granted') {
                         console.error("Motion sensor permission denied");
-                        // Don't show error - still allow webcam to work
-                        console.warn("Motion sensors disabled - AR tracking may be limited");
+                        ShowError("Motion sensor access is required for AR. Please enable it in Settings.");
                         return;
                     }
                     console.log("iOS motion sensor permission granted");
                 } catch (error) {
                     console.error("Error requesting motion sensor permission: " + error);
-                    // Don't show error - still allow webcam to work
-                    console.warn("Motion sensors disabled - AR tracking may be limited");
+                    ShowError("Failed to request motion sensor permission. " + error);
                     return;
                 }
             }
             
             // Start the motion sensors
-            try {
-                await window.wTracker.startAngles();
+            window.wTracker.startAngles()
+            .then(()=>{
                 console.log("Motion sensors started successfully");
-            } catch(error) {
+            })
+            .catch(error=>{
                 console.error("Failed to start motion sensors - " + error);
-                // Don't block the app - webcam can still work
-                console.warn("Motion sensors disabled - AR tracking may be limited");
-            }
+                ShowError("Failed to start the experience. " + error);
+            });
         }
 
         function StartGPS(){            
