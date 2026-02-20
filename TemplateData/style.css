@@ -1,16 +1,177 @@
-body { padding: 0; margin: 0 }
-#unity-container { position: absolute }
-#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
-#unity-container.unity-mobile { width: 100%; height: 100% }
-#unity-canvas { background: #231F20 }
-.unity-mobile #unity-canvas { width: 100%; height: 100% }
-#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
-#unity-logo { width: 154px; height: 130px; background: url('unity-logo-light.png') no-repeat center }
-#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; margin-left: 6.5px; background: url('progress-bar-empty-light.png') no-repeat center }
-#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-light.png') no-repeat center }
-#unity-footer { position: relative }
-.unity-mobile #unity-footer { display: none }
-#unity-webgl-logo { float:left; width: 204px; height: 38px; background: url('webgl-logo.png') no-repeat center }
-#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
-#unity-fullscreen-button { float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
-#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+/* ========== Base ========== */
+body { padding: 0; margin: 0; }
+#unity-container { position: absolute; }
+#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+#unity-container.unity-mobile { width: 100%; height: 100%; }
+#unity-canvas { background: #1a1a2e; }
+.unity-mobile #unity-canvas { width: 100%; height: 100%; }
+
+/* ========== Permission / Camera Access Screen ========== */
+.permission-screen {
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.permission-card {
+    max-width: 340px;
+    width: 85vw;
+    padding: 2.5rem 2rem;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.permission-logo {
+    width: 100%;
+    max-width: 140px;
+    height: auto;
+    max-height: 100px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.permission-logo-fallback {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #16213e;
+    letter-spacing: 0.02em;
+    margin-bottom: 1rem;
+}
+
+.permission-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #16213e;
+    letter-spacing: -0.02em;
+}
+
+.permission-text {
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #4a5568;
+}
+
+.permission-camera-select {
+    width: 100%;
+    margin-bottom: 1.25rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    color: #334155;
+}
+
+.permission-button {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 52, 96, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.permission-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(15, 52, 96, 0.45);
+}
+
+.permission-button:active {
+    transform: translateY(0);
+}
+
+/* ========== Loading Screen ========== */
+#unity-loading-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Shown when StartAR() runs until Unity loads */
+    flex-direction: column;
+    align-items: center;
+    min-width: 260px;
+}
+
+.loading-screen {
+    background: transparent;
+}
+
+.loading-logo {
+    width: 160px;
+    max-height: 130px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 1.25rem;
+}
+
+.loading-text {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.loading-progress-track {
+    width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.loading-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0f3460, #e94560);
+    border-radius: 4px;
+    transition: width 0.2s ease;
+}
+
+/* Legacy progress bar (if build uses old IDs) */
+#unity-progress-bar-empty {
+    width: 200px;
+    height: 8px;
+    margin-top: 1rem;
+    margin-left: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#unity-progress-bar-full {
+    height: 8px;
+    margin-top: 0;
+    background: linear-gradient(90deg, #0f3460, #e94560);
+    border-radius: 4px;
+    transition: width 0.2s ease;
+}
+
+/* ========== Error & Screenshot overlays ========== */
+#errorDiv.ctaDiv {
+    background: rgba(26, 26, 46, 0.96);
+}
+
+#errorText {
+    color: #fff;
+    max-width: 80vw;
+    padding: 1rem;
+}
+
+#screenshotDiv .ctaDiv {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* ========== Footer (desktop) ========== */
+#unity-footer { position: relative; }
+.unity-mobile #unity-footer { display: none; }
+#unity-webgl-logo { float: left; width: 204px; height: 38px; background: url('webgl-logo.png') no-repeat center; }
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px; }
+#unity-fullscreen-button { float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center; }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none; }

@@ -3,13 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes'>
-    <title>Unity WebGL Player | MemoriesARU</title>
+    <title>MemoriesARU</title>
     <link rel="stylesheet" href="TemplateData/style.css">
+    <!-- Custom logo: add your logo as TemplateData/custom-logo.png (recommended: ~300x300px, PNG with transparency) -->
 
     <style>
-        html{
-            height: -webkit-fill-available;
-        }
+        html{ height: -webkit-fill-available; }
         body {
             margin: 0;
             padding: 0;
@@ -17,6 +16,7 @@
             min-height: -webkit-fill-available;
             width: 100vw;
             overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
         .ctaDiv {
             display: flex;
@@ -24,11 +24,7 @@
             align-items: center;
             justify-content: center;
             position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background: #fffa;
+            left: 0; right: 0; top: 0; bottom: 0;
             z-index: 99;
         }
     </style>
@@ -36,10 +32,16 @@
 <body>
     <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
     <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
-    <div id="startARDiv" class="ctaDiv">
-        <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
-        <p style="text-align: center; width:60vw">This augmented reality experience requires access to your device's camera and motion sensors</p>
-        <button id="startARButton" style="display:none" onclick="StartAR()">ALLOW ACCESS</button>
+    <!-- Permission / Camera access page - styled in style.css -->
+    <div id="startARDiv" class="ctaDiv permission-screen">
+        <div class="permission-card">
+            <img id="permissionLogo" class="permission-logo" src="TemplateData/custom-logo.png" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="permission-logo-fallback" style="display:none;">Memories AR</div>
+            <h1 class="permission-title">Augmented Reality</h1>
+            <p class="permission-text">This experience uses your device's camera and motion sensors to place content in the real world.</p>
+            <select id="chooseCamSel" class="permission-camera-select" style="display: none;" onchange="SelectCam()"></select>
+            <button id="startARButton" class="permission-button" style="display:none" onclick="StartAR()">Allow Access</button>
+        </div>
     </div>
     <div id="screenshotDiv" style="display: none;" class="ctaDiv">
         <div style="position:relative; background-color:white; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25);">
@@ -52,10 +54,11 @@
     </div>
     <div id="unity-container" class="unity-mobile">
         <canvas id="unity-canvas" style="width: 100%; height: 100%; background: #0000; z-index: -99;"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
+        <div id="unity-loading-bar" class="loading-screen">
+            <img id="unity-logo" class="loading-logo" src="TemplateData/custom-logo.png" alt="Logo" onerror="this.onerror=null; this.src='TemplateData/unity-logo-light.png';">
+            <p class="loading-text">Loading experience...</p>
+            <div id="unity-progress-bar-empty" class="loading-progress-track">
+                <div id="unity-progress-bar-full" class="loading-progress-fill"></div>
             </div>
         </div>
         <canvas id="video-canvas"></canvas>
