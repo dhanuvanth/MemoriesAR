@@ -36,8 +36,7 @@
     <div id="startARDiv" class="ctaDiv permission-screen">
         <div class="permission-card">
             <img id="permissionLogo" class="permission-logo" src="TemplateData/custom-logo.png" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="permission-logo-fallback" style="display:none;">Memories AR</div>
-            <h1 class="permission-title">Augmented Reality</h1>
+            <div class="permission-logo-fallback" style="display:none;">Always Be With Us</div>
             <p class="permission-text">This experience uses your device's camera and motion sensors to place content in the real world.</p>
             <select id="chooseCamSel" class="permission-camera-select" style="display: none;" onchange="SelectCam()"></select>
             <button id="startARButton" class="permission-button" style="display:none" onclick="StartAR()">Allow Access</button>
@@ -212,7 +211,7 @@
                 }
             });
             var select = document.getElementById("chooseCamSel");
-            select.style.display = "block";
+            /* Camera dropdown hidden from UI - first available camera is used */
             var count = 0;
             //reverse array because some Android phones can't distinguish front and back cams at first load
             //and when this happens, most of the time, front cam goes first and back cam goes last
