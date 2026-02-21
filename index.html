@@ -115,14 +115,14 @@
                     }
                 ).then((unityInstance) => {
                 window.unityInstance = unityInstance;
-                loadingBar.style.display = "none";
                 RequestWebcam();
-                // Request motion/orientation only once, after Unity is ready (avoids duplicate iOS permission prompts)
-                if (!window._motionSensorsStarted) {
-                    window._motionSensorsStarted = true;
-                    StartMotionSensors();
-                }
+                loadingBar.style.display = "none";
             });
+            StartMotionSensors();
+            
+            //Call Start GPS here --> StartGPS();
+
+            
             
             loadingBar.style.display = "block";
         }
