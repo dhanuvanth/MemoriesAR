@@ -90,13 +90,17 @@ body { padding: 0; margin: 0; }
 /* ========== Loading Screen ========== */
 #unity-loading-bar {
     position: absolute;
-    left: 50%;
+    left: 0;
+    right: 0;
+    width: 100%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     display: none; /* Shown when StartAR() runs until Unity loads */
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-width: 260px;
+    box-sizing: border-box;
 }
 
 .loading-screen {
@@ -108,7 +112,8 @@ body { padding: 0; margin: 0; }
     max-height: 130px;
     height: auto;
     object-fit: contain;
-    margin-bottom: 1.25rem;
+    margin: 0 auto 1.25rem;
+    display: block;
 }
 
 .loading-text {
@@ -116,11 +121,14 @@ body { padding: 0; margin: 0; }
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.85);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
 }
 
 .loading-progress-track {
     width: 200px;
     height: 8px;
+    margin-left: auto;
+    margin-right: auto;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     overflow: hidden;
@@ -139,7 +147,8 @@ body { padding: 0; margin: 0; }
     width: 200px;
     height: 8px;
     margin-top: 1rem;
-    margin-left: 0;
+    margin-left: auto;
+    margin-right: auto;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     overflow: hidden;
